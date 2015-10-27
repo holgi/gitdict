@@ -46,7 +46,7 @@ This is a little bit more tricky, since we need to commit our changes:
     repo['changed_text_file'] = 'this has changed so much'
     repo['new_binary_file'] = b'some bytes'
     folder = repo['folder']
-    repo['sub_folder/and_file'] = 'will be created'
+    folder['sub_folder/and_file'] = 'will be created'
     del repo['not_needed_anymore']            
     repo.commit(message, author)
     
@@ -74,7 +74,7 @@ more ideas
     some_file.changes == [file_revision_3, file_revision_2, file_revision_1]
     
     some_file.data == b'some binary data'
-    some_file.text == some_file.decode('utf-8') == some_file.data.decode('utf-8')
+    some_file.text == some_file.data.decode('utf-8')
     
     
         
