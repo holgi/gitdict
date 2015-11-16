@@ -39,14 +39,14 @@ def find_version(*file_paths):
 
 
 setup(
-    name='kaolin',
+    name='gitdict',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version=find_version('kaolin', '__init__.py'),
+    version=find_version('gitdict', '__init__.py'),
 
-    description='porcelain for pygit2',
+    description='Access a git repository like a python dict',
     long_description=long_description,
 
     # The project's main homepage.

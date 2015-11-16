@@ -1,25 +1,22 @@
-kaolin
-======
+gitdict
+=======
 
-Building porcelain for pygit2
-
-
-With kaolin accessing a git repository should be as usable as a standard python dict.
+Access a git repository like a pyhton dict, based on pygit2.
 
 
 opening a git repository
 ------------------------
 
     # standard way
-    repo = kaolin.Repository('path/to/repo')
+    repo = gitdict.Repository('path/to/repo')
     
     # as a context manager
-    with kaolin.Repository('path/to/repo') as repo:
+    with gitdict.Repository('path/to/repo') as repo:
         # do stuff
     
     # using branches and refs
-    branch = kaolin.Repository('path/to/repo', branch='master')
-    ref = kaolin.Repository('path/to/repo', ref='HEAD')
+    branch = gitdict.Repository('path/to/repo', branch='master')
+    ref = gitdict.Repository('path/to/repo', ref='HEAD')
 
 
 reading from a repository
@@ -39,7 +36,7 @@ writing to a repository
 
 This is a little bit more tricky, since we need to commit our changes:
 
-    author = kaolin.Signature('Author Name', 'Author Email')
+    author = gitdict.Signature('Author Name', 'Author Email')
     message = 'a really cool change'
     
     # standard way
@@ -64,12 +61,12 @@ more ideas
     
     last_commit = repo.last_commit
     last_commit.message == 'a really cool change'
-    last_commit.author == kaolin.Signature('Author Name', 'Author Email')
+    last_commit.author == gitdict.Signature('Author Name', 'Author Email')
     
     some_file.path == 'somewhere/is/a/file'
     last_commit = file.last_commit
     last_commit.message == 'this only fixed a typo'
-    last_commit.author == kaolin.Signature('Author Name', 'Author Email')
+    last_commit.author == gitdict.Signature('Author Name', 'Author Email')
     
     some_file.changes == [file_revision_3, file_revision_2, file_revision_1]
     
