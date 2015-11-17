@@ -18,8 +18,8 @@ class Repository(object):
             ref = self._pg2_repo.head
         else:
             ref = self._pg2_repo.lookup_branch(branch, pygit2.GIT_BRANCH_LOCAL)
-        commit = self._pg2_repo[ref.target]
-        self._pg2_tree = commit.tree
+        self.commit = self._pg2_repo[ref.target]
+        self._pg2_tree = self.commit.tree
         # the shorthand name of the reference is used a branch name
         # this will also point to a branch from git head.
         self.branch = ref.shorthand
