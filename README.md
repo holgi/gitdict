@@ -14,9 +14,8 @@ opening a git repository
     with gitdict.Repository('path/to/repo') as repo:
         # do stuff
     
-    # using branches and refs
+    # using branches
     branch = gitdict.Repository('path/to/repo', branch='master')
-    ref = gitdict.Repository('path/to/repo', ref='HEAD')
 
 
 reading from a repository
@@ -76,3 +75,9 @@ more ideas
     
         
     
+    
+notes to self
+-------------
+
+- pygit2.Repository.default_signature: Signatur lt. Repo-Config
+- 

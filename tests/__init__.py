@@ -5,7 +5,7 @@ import tempfile
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def gitrepo(request):
     own_path = os.path.dirname(__file__)
     tar_path = os.path.join(own_path, 'pygit.git.tar.gz')
