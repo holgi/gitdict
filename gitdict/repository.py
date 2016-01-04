@@ -13,6 +13,8 @@ class Repository(Folder):
     __name__   = None
     __parent__ = None
     
+    default_encoding = 'utf-8'
+    
     def __init__(self, repository_path, branch=None):
         ''' initialization of the repository class 
         

@@ -26,4 +26,22 @@ def test_file_git_path(gitrepo):
     gf = repo['docs']['recipes']['git-init.rst']
     assert gf.git_path == 'docs/recipes/git-init.rst'
 
-    
+def test_get_raw_data(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['.gitattributes']
+    assert gf.data == '*.h text eol=lf\n'.encode('utf-8')
+    assert isinstance(gf.data, bytes)
+
+def test_get_text_default_encoding(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['.gitattributes']
+    assert isinstance(gf.text, str)
+    assert gf.text == '*.h text eol=lf\n'
+    assert gf.decode() == '*.h text eol=lf\n'
+
+def test_get_text_specific_encoding(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['.gitattributes']
+    assert gf.encoding == 'utf-8'
+    assert gf.decode('ascii') == '*.h text eol=lf\n'
+    assert gf.encoding == 'ascii'
