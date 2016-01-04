@@ -53,3 +53,7 @@ def test_repository_as_context_manager(gitrepo):
 def test_repository_git_path(gitrepo):
     repo = gitdict.Repository(gitrepo)
     assert repo.git_path == ''
+
+def test_repository_branches(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    assert repo.branches() == ['gh-pages', 'master', 'merge-commits', 'pr346']

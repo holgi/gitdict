@@ -43,6 +43,11 @@ class Repository(Folder):
         self.branch = ref.shorthand
         self.path = self._pg2_repo.path
     
+    def branches(self):
+        ''' list all local branches in the git repository '''
+        flag = pygit2.GIT_BRANCH_LOCAL
+        return [branch for branch in self._pg2_repo.listall_branches(flag)]
+    
     @property
     def git_path(self):
         ''' the path of the git object in the repository '''
