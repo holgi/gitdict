@@ -12,6 +12,10 @@ def example():
         assert 1==2
     assert 0
 
+def test_repository_is_also_folder(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    assert isinstance(repo, gitdict.Folder)
+
 def test_repository_initialization_bare_head(gitrepo):
     repo = gitdict.Repository(gitrepo)
     assert isinstance(repo._pg2_repo, pygit2.Repository)
@@ -45,3 +49,7 @@ def test_repository_as_context_manager(gitrepo):
     with gitdict.Repository(gitrepo) as repo:
         assert str(repo.commit.id) == '7a8474cd44e4aaaa52ad9163d7d1bf971255662f'
         assert str(repo._pg2_tree.id) == 'bfd1938cd1ee3c37b1cc3170c95821deac9ae0ce'
+
+def test_repository_git_path(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    assert repo.git_path == ''
