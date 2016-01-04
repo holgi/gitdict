@@ -30,15 +30,27 @@ class File(object):
         return os.path.join(self.__parent__.git_path, self.__name__)
     
     @property
+    def commit(self):
+        ''' the commit where the file was last changed '''
+        return self._repository.last_commit_for(self.git_path)
+
+    @property
+    def history(self):
+        ''' commit history of the file '''
+        return self._repository.commit_history_for(self.git_path)
+    
+    @property
     def data(self):
+        ''' access to binary data '''
         return self._pg2_blob.data
     
     @property
     def text(self):
+        ''' data as decoded text, uses default encoding '''
         return self.decode()
     
     def decode(self, encoding=None):
+        ''' data as decoded text, might use a specified encoding '''
         if encoding:
             self.encoding = encoding
         return self._pg2_blob.data.decode(self.encoding)
-        

@@ -144,4 +144,34 @@ def test_fodler_not_equals(gitrepo):
     assert folder != 'x'
     assert folder != repo
     assert folder != folder['recipes']
+
+
+def test_commit(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    folder = repo['docs/recipes']
+    commit = folder.commit
+    assert isinstance(commit, pygit2.Commit)
+    message = commit.message
+    assert message.startswith('Fix indent error')
     
+def test_history(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    folder = repo['docs/recipes']
+    expected = [
+        'Fix indent error',
+        'Add a recipe for git clone --mirror',
+        'Cherry-pick recipe: clean up after picking',
+        'Add git-cherry-pick recipes',
+        'git-show recipe: Add the easy Python 3 way',
+        'Clarify comments in git-show recipe',
+        'Correct git-show recipe',
+        'Update git-show recipe',
+        'Remove obsolete git-branch recipe',
+        'docs: clarify git-init recipe',
+        'docs: adjust to recent changes',
+        'Doc fixes: change head.oid to head.target in examples',
+        'restructured recipes' ]
+    for i, commit in enumerate(folder.history):
+        assert isinstance(commit, pygit2.Commit)
+        assert commit.message.startswith(expected[i])
+    assert len(list(folder.history)) == len(expected)

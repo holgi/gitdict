@@ -45,3 +45,25 @@ def test_get_text_specific_encoding(gitrepo):
     assert gf.encoding == 'utf-8'
     assert gf.decode('ascii') == '*.h text eol=lf\n'
     assert gf.encoding == 'ascii'
+
+def test_commit(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['README.rst']
+    commit = gf.commit
+    assert isinstance(gf.commit, pygit2.Commit)
+    message = commit.message
+    assert message.startswith("Release 0.23.2")
+    
+def test_history(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['docs/recipes/git-show.rst']
+    expected = [
+        'git-show recipe: Add the easy Python 3 way',
+        'Clarify comments in git-show recipe',
+        'Correct git-show recipe',
+        'Update git-show recipe',
+        'restructured recipes' ]
+    for i, commit in enumerate(gf.history):
+        assert isinstance(commit, pygit2.Commit)
+        assert commit.message.startswith(expected[i])
+    assert len(expected) == len(list(gf.history))

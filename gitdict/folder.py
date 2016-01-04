@@ -9,31 +9,11 @@ from .exceptions import GitDictError
 from .file import File
 
 
-class Folder(collections.abc.Mapping):
-    ''' Simple representation of a "git folder" '''
+class FolderBase(collections.abc.Mapping):
+    ''' Base class representating a "git folder" 
     
-    def __init__(self, name, parent, repository, pg2_tree):
-        ''' initialization
-        name:       name of the folder
-        parent:     parent containing this folder
-        repository: the repository
-        pg2_tree:   the pygit2 object for this folder
-        '''
-        self.__name__ = name
-        self.__parent__ = parent
-        self._repository = repository
-        self._pg2_tree = pg2_tree
-
-    @property
-    def git_path(self):
-        ''' the path of the git object in the repository '''
-        return os.path.join(self.__parent__.git_path, self.__name__)
-    
-    def _child_factory(self, tree_entry):
-        ''' create a gitdict object from a pygit2 tree entry '''
-        child_class = self.child_map[tree_entry.type]
-        pg2_object = self._repository._pg2_repo[tree_entry.id]
-        return child_class(tree_entry.name, self, self._repository, pg2_object)
+    These methods are used in the Repository and Folder classes.
+    '''
 
     def __contains__(self, key):
         ''' check if a child object exists (collections.abc.Mapping)
@@ -102,16 +82,58 @@ class Folder(collections.abc.Mapping):
     
     def __eq__(self, other):
         ''' is this equal to another object (collections.abc.Mapping) '''
-        if not isinstance(other, Folder):
+        if not isinstance(other, FolderBase):
             return False
         return self._pg2_tree.id == other._pg2_tree.id
         
     def __ne__(self, other):
         ''' is this not equal to another object (collections.abc.Mapping) '''
-        if not isinstance(other, Folder):
+        if not isinstance(other, FolderBase):
             return True
         print('x')
         return self._pg2_tree.id != other._pg2_tree.id
 
 
-Folder.child_map = {'tree': Folder, 'blob': File }
+class Folder(FolderBase):
+    ''' Representation of a "git folder" 
+    
+    These methods are different from the one in the Repository class.
+    '''
+    
+    def __init__(self, name, parent, repository, pg2_tree):
+        ''' initialization
+        name:       name of the folder
+        parent:     parent containing this folder
+        repository: the repository
+        pg2_tree:   the pygit2 object for this folder
+        '''
+        self.__name__ = name
+        self.__parent__ = parent
+        self._repository = repository
+        self._pg2_tree = pg2_tree
+
+    @property
+    def git_path(self):
+        ''' the path of the git object in the repository '''
+        return os.path.join(self.__parent__.git_path, self.__name__)
+    
+    @property
+    def commit(self):
+        ''' the commit where the file was last changed '''
+        return self._repository.last_commit_for(self.git_path)
+
+    @property
+    def history(self):
+        ''' commit history of the file '''
+        return self._repository.commit_history_for(self.git_path)
+
+
+    def _child_factory(self, tree_entry):
+        ''' create a gitdict object from a pygit2 tree entry '''
+        child_class = self.child_map[tree_entry.type]
+        pg2_object = self._repository._pg2_repo[tree_entry.id]
+        return child_class(tree_entry.name, self, self._repository, pg2_object)
+    
+
+# some things have to be added afterwards
+FolderBase.child_map = {'tree': Folder, 'blob': File }

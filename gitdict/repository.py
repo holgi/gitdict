@@ -3,9 +3,9 @@
 import pygit2
 
 from .exceptions import GitDictError
-from .folder import Folder
+from .folder import FolderBase
 
-class Repository(Folder):
+class Repository(FolderBase):
     ''' Simple representation of a git repository and "root folder" 
     
     '''
@@ -47,6 +47,76 @@ class Repository(Folder):
         ''' list all local branches in the git repository '''
         flag = pygit2.GIT_BRANCH_LOCAL
         return [branch for branch in self._pg2_repo.listall_branches(flag)]
+    
+    def last_commit_for(self, git_path):
+        ''' searches the latest commit for a given git path '''
+        history = list(self.commit_history_for(git_path))
+        if len(history) > 0:
+            return history[0]
+        raise GitDictError('No commit for: ' + git_path)
+    
+    def commit_history_for(self, git_path):
+        ''' history of all commits and ids for a given git path 
+        
+        with a lot of help from https://github.com/gollum/rugged_adapter/
+        '''
+        sorting = pygit2.GIT_SORT_TIME | pygit2.GIT_SORT_REVERSE
+        history = []
+        walker = self._pg2_repo.walk(self.commit.id, sorting)
+        for commit in walker:
+            if len(commit.parents) > 1:
+                continue
+            if self._commit_touches_path(commit, git_path, walker):
+                history.append(commit)
+        return reversed(history)
+
+    def _tree_entry(self, tree, git_path):
+        ''' returns a tree entry for a git path and a git tree
+        
+        if a path does not exist, None will be returned. this is used in 
+        _commit_touches_path()
+        
+        with a lot of help from https://github.com/gollum/rugged_adapter/
+        '''
+        try:
+            return tree[git_path]
+        except KeyError:
+            return None
+
+    def _commit_touches_path(self, commit, git_path, walker):
+        ''' returns true if a commit introduced changes to a path
+        
+        Uses commit trees to make that determination. This mimics the 
+        history simplification rules that `git log` uses by default, where 
+        a commit is omitted if it is TREESAME to any parent.
+        
+        with a lot of help from https://github.com/gollum/rugged_adapter/
+        '''
+        entry = self._tree_entry(commit.tree, git_path)
+        if not commit.parents:
+            # This is the root commit, return true if it has path in its tree
+            return True if entry else False
+        treesame = False
+        for parent in commit.parents:
+            parent_entry = self._tree_entry(parent.tree, git_path)
+            # Only follow the first TREESAME parent for merge commits
+            if treesame:
+                walker.hide(parent.id)
+                walker.next()
+            if entry is None and parent_entry is None:
+                treesame = True
+            elif entry and parent_entry and entry.id == parent_entry.id:
+                treesame = True
+        return not treesame
+    
+    @property
+    def history(self):
+        ''' history of all commits and ids for the repository '''
+        sorting = pygit2.GIT_SORT_TOPOLOGICAL
+        history = []
+        for commit in self._pg2_repo.walk(self.commit.id, sorting):
+            history.append(commit)
+        return history
     
     @property
     def git_path(self):

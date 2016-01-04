@@ -14,7 +14,7 @@ def example():
 
 def test_repository_is_also_folder(gitrepo):
     repo = gitdict.Repository(gitrepo)
-    assert isinstance(repo, gitdict.Folder)
+    assert isinstance(repo, gitdict.FolderBase)
 
 def test_repository_initialization_bare_head(gitrepo):
     repo = gitdict.Repository(gitrepo)
