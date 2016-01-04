@@ -33,7 +33,7 @@ class Repository(object):
                 raise GitDictError('could not find local branch ' + branch)
         self.commit = self._pg2_repo[ref.target]
         self._pg2_tree = self.commit.tree
-        # the shorthand name of the reference is used a branch name
+        # the shorthand name of the reference is used as a branch name
         # this will also point to a branch from git head.
         self.branch = ref.shorthand
         self.path = self._pg2_repo.path

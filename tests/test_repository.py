@@ -27,9 +27,15 @@ def test_repository_initialization_bare_branch(gitrepo):
     assert str(repo.commit.id) == '19425a1ca1e819f69428edd982d4a8b90d0b9d97'
     assert str(repo._pg2_tree.id) == 'dfbc8ee7ad6ebb3600c5372e094bfba447b4511d'
     assert repo.branch == 'gh-pages'
-    no = os.path.join(repo.path, 'wrongpath')
-    with pytest.raises(KeyError):
+
+def test_repository_error_on_wrong_path(gitrepo):
+    no = os.path.join(gitrepo, 'wrongpath')
+    with pytest.raises(gitdict.GitDictError):
         repo = gitdict.Repository(no)
+
+def test_repository_error_on_unknown_branch(gitrepo):
+    with pytest.raises(gitdict.GitDictError):
+        repo = gitdict.Repository(gitrepo, branch='some-unknown-branch')
     
 def test_repository_is_bare_passthrough(gitrepo):
     repo = gitdict.Repository(gitrepo)
