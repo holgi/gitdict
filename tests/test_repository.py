@@ -27,8 +27,15 @@ def test_repository_initialization_bare_branch(gitrepo):
     assert str(repo.commit.id) == '19425a1ca1e819f69428edd982d4a8b90d0b9d97'
     assert str(repo._pg2_tree.id) == 'dfbc8ee7ad6ebb3600c5372e094bfba447b4511d'
     assert repo.branch == 'gh-pages'
+    no = os.path.join(repo.path, 'wrongpath')
+    with pytest.raises(KeyError):
+        repo = gitdict.Repository(no)
     
 def test_repository_is_bare_passthrough(gitrepo):
     repo = gitdict.Repository(gitrepo)
     assert repo.is_bare == True
-    
+
+def test_repository_as_context_manager(gitrepo):
+    with gitdict.Repository(gitrepo) as repo:
+        assert str(repo.commit.id) == '7a8474cd44e4aaaa52ad9163d7d1bf971255662f'
+        assert str(repo._pg2_tree.id) == 'bfd1938cd1ee3c37b1cc3170c95821deac9ae0ce'
