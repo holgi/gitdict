@@ -5,7 +5,7 @@ import collections
 
 import pygit2
 
-from .exceptions import GitDictError
+from .utils import GitDictError, NodeMixin
 from .file import File
 
 
@@ -53,7 +53,7 @@ class FolderBase(collections.abc.Mapping):
         # a direct child element was requested
         entry = self._pg2_tree[key]
         if not entry.type in self.child_map:
-            raise KeyError( "'{}'".format(key) )
+            raise KeyError(key)
         return self._child_factory(entry)
     
     def _entries(self):
@@ -94,7 +94,7 @@ class FolderBase(collections.abc.Mapping):
         return self._pg2_tree.id != other._pg2_tree.id
 
 
-class Folder(FolderBase):
+class Folder(FolderBase, NodeMixin):
     ''' Representation of a "git folder" 
     
     These methods are different from the one in the Repository class.
@@ -111,22 +111,6 @@ class Folder(FolderBase):
         self.__parent__ = parent
         self._repository = repository
         self._pg2_tree = pg2_tree
-
-    @property
-    def git_path(self):
-        ''' the path of the git object in the repository '''
-        return os.path.join(self.__parent__.git_path, self.__name__)
-    
-    @property
-    def commit(self):
-        ''' the commit where the file was last changed '''
-        return self._repository.last_commit_for(self.git_path)
-
-    @property
-    def history(self):
-        ''' commit history of the file '''
-        return self._repository.commit_history_for(self.git_path)
-
 
     def _child_factory(self, tree_entry):
         ''' create a gitdict object from a pygit2 tree entry '''

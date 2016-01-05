@@ -2,7 +2,7 @@
 
 import pygit2
 
-from .exceptions import GitDictError
+from .utils import GitDictError
 from .folder import FolderBase
 
 class Repository(FolderBase):
