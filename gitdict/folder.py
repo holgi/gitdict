@@ -34,9 +34,7 @@ class FolderBase(collections.abc.Mapping):
         try:
             return self[key]
         except KeyError as error:
-            if default is not None:
-                return default
-            raise error
+            return default
     
     def __getitem__(self, key):
         ''' return a child object (collections.abc.Mapping)

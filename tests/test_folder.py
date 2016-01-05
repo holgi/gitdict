@@ -89,13 +89,6 @@ def test_folder_get_default_on_unknown_child(gitrepo):
     assert not isinstance(child, gitdict.File)
     assert child == 'default_value'
 
-def test_folder_get_raises_error_on_unknown_child(gitrepo):
-    repo = gitdict.Repository(gitrepo)
-    folder = repo['docs']
-    with pytest.raises(KeyError):
-        child = folder.get('unknown_child')
-        child = folder.get('unknown/child/path')
-
 def test_folder_keys(gitrepo):
     repo = gitdict.Repository(gitrepo)
     folder = repo['docs']
