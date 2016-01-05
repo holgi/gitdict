@@ -39,3 +39,12 @@ class File(NodeMixin):
         if encoding:
             self.encoding = encoding
         return self._pg2_blob.data.decode(self.encoding)
+    
+    def diff(self, commitish):
+        ''' get a diff for the same file in an other commmit '''
+        pg2_object = self._get_object_from_commit(commitish)
+        if pg2_object and not isinstance(pg2_object, pygit2.Blob):
+            # this might only happen, if the git path pointed in this commit
+            # to a tree instead of a blob
+            raise GitDictError('Diff impossible for: ' + repr(pg2_object))
+        return self._pg2_blob.diff(pg2_object)

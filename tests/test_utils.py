@@ -23,7 +23,6 @@ def test_get_or_none_unknown_element():
     value = gitdict.utils.get_or_none(d, 'a')
     assert value is None
 
-
 def test_ensure_oid_form_oid():
     something = pygit2.Oid(raw=b"1")
     value = gitdict.utils.ensure_oid(something)

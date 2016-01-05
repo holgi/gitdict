@@ -26,27 +26,27 @@ def test_file_git_path(gitrepo):
     gf = repo['docs']['recipes']['git-init.rst']
     assert gf.git_path == 'docs/recipes/git-init.rst'
 
-def test_get_raw_data(gitrepo):
+def test_file_get_raw_data(gitrepo):
     repo = gitdict.Repository(gitrepo)
     gf = repo['.gitattributes']
     assert gf.data == '*.h text eol=lf\n'.encode('utf-8')
     assert isinstance(gf.data, bytes)
 
-def test_get_text_default_encoding(gitrepo):
+def test_file_get_text_default_encoding(gitrepo):
     repo = gitdict.Repository(gitrepo)
     gf = repo['.gitattributes']
     assert isinstance(gf.text, str)
     assert gf.text == '*.h text eol=lf\n'
     assert gf.decode() == '*.h text eol=lf\n'
 
-def test_get_text_specific_encoding(gitrepo):
+def test_file_get_text_specific_encoding(gitrepo):
     repo = gitdict.Repository(gitrepo)
     gf = repo['.gitattributes']
     assert gf.encoding == 'utf-8'
     assert gf.decode('ascii') == '*.h text eol=lf\n'
     assert gf.encoding == 'ascii'
 
-def test_commit(gitrepo):
+def test_file_commit(gitrepo):
     repo = gitdict.Repository(gitrepo)
     gf = repo['README.rst']
     commit = gf.commit
@@ -54,7 +54,7 @@ def test_commit(gitrepo):
     message = commit.message
     assert message.startswith("Release 0.23.2")
     
-def test_history(gitrepo):
+def test_file_history(gitrepo):
     repo = gitdict.Repository(gitrepo)
     gf = repo['docs/recipes/git-show.rst']
     expected = [
@@ -67,3 +67,16 @@ def test_history(gitrepo):
         assert isinstance(commit, pygit2.Commit)
         assert commit.message.startswith(expected[i])
     assert len(expected) == len(list(gf.history))
+
+def test_file_diff_from_commit(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['docs/recipes/git-show.rst']
+    commit = list(gf.history)[1]
+    diff = gf.diff(commit)
+    assert isinstance(diff, pygit2.Patch)
+
+def test_file_get_object_from_commit_raises_error(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['docs/recipes/git-show.rst']
+    with pytest.raises(gitdict.GitDictError):
+        assert gf._get_object_from_commit(repo._pg2_tree)

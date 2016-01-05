@@ -116,6 +116,15 @@ class Folder(FolderBase, NodeMixin):
         pg2_object = self._repository._pg2_repo[tree_entry.id]
         return child_class(tree_entry.name, self, self._repository, pg2_object)
     
+    def diff(self, commitish):
+        ''' get a diff for the same file in an other commmit '''
+        pg2_object = self._get_object_from_commit(commitish)
+        if pg2_object and not isinstance(pg2_object, pygit2.Tree):
+            # this might only happen, if the git path pointed in this commit
+            # to a blob instead of a tree
+            raise GitDictError('Diff impossible for: ' + repr(pg2_object))
+        return self._pg2_tree.diff_to_tree(pg2_object)
+    
 
 # some things have to be added afterwards
 FolderBase.child_map = {'tree': Folder, 'blob': File }

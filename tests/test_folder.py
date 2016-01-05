@@ -168,3 +168,10 @@ def test_history(gitrepo):
         assert isinstance(commit, pygit2.Commit)
         assert commit.message.startswith(expected[i])
     assert len(list(folder.history)) == len(expected)
+
+def test_folder_diff_from_commit(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    folder = repo['docs/recipes']
+    commit = list(folder.history)[1]
+    diff = folder.diff(commit)
+    assert isinstance(diff, pygit2.Diff)

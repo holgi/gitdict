@@ -52,6 +52,14 @@ class NodeMixin(object):
         ''' commit history of the file '''
         return self._repository.commit_history_for(self.git_path)
         
-    def diff(self, commit):
-        commit_id = ensure_oid(commit)
+    def _get_object_from_commit(self, commitish):
+        commit_id = ensure_oid(commitish)
+        commit = self._repository._pg2_repo[commit_id]
+        if not isinstance(commit, pygit2.Commit):
+            raise GitDictError('Not a commit: ' + repr(commit))
+        path = self.git_path
+        entry = get_or_none(commit.tree, path)
+        return self._repository._pg2_repo[entry.id] if entry else None
+
+        
         
