@@ -57,3 +57,15 @@ def test_repository_git_path(gitrepo):
 def test_repository_branches(gitrepo):
     repo = gitdict.Repository(gitrepo)
     assert repo.branches() == ['gh-pages', 'master', 'merge-commits', 'pr346']
+
+def test_repository_last_commit_for_unknown_path(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    with pytest.raises(gitdict.GitDictError):
+        repo.last_commit_for('unknown-path')
+
+def test_repository_history(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    history = repo.history
+    for commit in history:
+        assert isinstance(commit, pygit2.Commit)
+    assert len(history) == 1242
