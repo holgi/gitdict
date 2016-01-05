@@ -2,15 +2,15 @@ import os
 import pygit2
 
 
-def get_oid(something):
+def ensure_oid(something):
     ''' try to return an pygit2.Oid for an unknown variable type '''
     if isinstance(something, pygit2.Oid):
         return something
     try:
         if isinstance(something, str):
-            return pygit2.Oid(hex=commit)
+            return pygit2.Oid(hex=something)
         if isinstance(something, bytes):
-            return pygit2.Oid(raw=commit)
+            return pygit2.Oid(raw=something)
         if isinstance(something.id, pygit2.Oid):
             return something.id
     except (ValueError, AttributeError, TypeError):
@@ -53,5 +53,5 @@ class NodeMixin(object):
         return self._repository.commit_history_for(self.git_path)
         
     def diff(self, commit):
-        commit_id = get_oid(commit)
+        commit_id = ensure_oid(commit)
         
