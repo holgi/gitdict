@@ -2,7 +2,7 @@
 
 import pygit2
 
-from .utils import GitDictError
+from .utils import GitDictError, get_or_none
 from .folder import FolderBase
 
 class Repository(FolderBase):
@@ -70,19 +70,6 @@ class Repository(FolderBase):
                 history.append(commit)
         return reversed(history)
 
-    def _tree_entry(self, tree, git_path):
-        ''' returns a tree entry for a git path and a git tree
-        
-        if a path does not exist, None will be returned. this is used in 
-        _commit_touches_path()
-        
-        with a lot of help from https://github.com/gollum/rugged_adapter/
-        '''
-        try:
-            return tree[git_path]
-        except KeyError:
-            return None
-
     def _commit_touches_path(self, commit, git_path, walker):
         ''' returns true if a commit introduced changes to a path
         
@@ -92,13 +79,13 @@ class Repository(FolderBase):
         
         with a lot of help from https://github.com/gollum/rugged_adapter/
         '''
-        entry = self._tree_entry(commit.tree, git_path)
+        entry = get_or_none(commit.tree, git_path)
         if not commit.parents:
             # This is the root commit, return true if it has path in its tree
             return True if entry else False
         treesame = False
         for parent in commit.parents:
-            parent_entry = self._tree_entry(parent.tree, git_path)
+            parent_entry = get_or_none(parent.tree, git_path)
             # Only follow the first TREESAME parent for merge commits
             if treesame:
                 walker.hide(parent.id)
