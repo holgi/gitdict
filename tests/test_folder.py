@@ -175,3 +175,35 @@ def test_folder_diff_from_commit(gitrepo):
     commit = list(folder.history)[1]
     diff = folder.diff(commit)
     assert isinstance(diff, pygit2.Diff)
+
+def test_folder_walk(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    walker = repo.walk()
+    parent, folders, files = next(walker)
+    assert parent == repo
+    for f in folders:
+        assert isinstance(f, gitdict.Folder)
+    for f in files:
+        assert isinstance(f, gitdict.File)
+    paths = [f.git_path for f in folders]
+    assert paths == ['docs', 'misc', 'pygit2', 'src', 'test']
+    paths = [f.git_path for f in files]
+    expected = [
+        '.gitattributes', '.gitignore', '.mailmap', '.pep8', '.travis.sh', 
+        '.travis.yml', 'COPYING', 'README.rst', 'TODO.txt','setup.py']
+    assert paths == expected
+    folder1 = folders[0]
+    parent2, folders, files = next(walker)
+    assert parent2 == folder1
+    paths = [f.git_path for f in folders]
+    assert paths == ['docs/_static', 'docs/_themes', 'docs/recipes']
+    paths = [f.git_path for f in files]
+    expected = [
+        'docs/Makefile', 'docs/blame.rst', 'docs/conf.py', 'docs/config.rst', 
+        'docs/development.rst', 'docs/diff.rst', 'docs/features.rst', 
+        'docs/general.rst', 'docs/index.rst', 'docs/install.rst', 
+        'docs/log.rst', 'docs/merge.rst', 'docs/objects.rst', 'docs/oid.rst', 
+        'docs/recipes.rst', 'docs/references.rst', 'docs/remotes.rst', 
+        'docs/repository.rst', 'docs/revparse.rst', 'docs/settings.rst', 
+        'docs/submodule.rst', 'docs/working-copy.rst']
+    assert paths == expected

@@ -90,7 +90,32 @@ class FolderBase(collections.abc.Mapping):
             return True
         print('x')
         return self._pg2_tree.id != other._pg2_tree.id
+    
+    def walk(self):
+        ''' Folder tree generator, similar to os.walk
 
+        For each folder in the folder instance rooted at top (including top
+        itself) yields a 3-tuple
+
+            parent folder, contained folders, contained files
+
+        Parent folder is the folder that contains the other parts in the tuple.
+        Contained folders is a list of Folders in parent folder.
+        Contained filens is a list of Files in parent folder.
+        
+        In contrast to os.walk, not the git paths are returned but the actual
+        File or Folder objects.
+        '''
+        folders = []
+        files = []
+        for item in self.values():
+            if isinstance(item, Folder):
+                folders.append(item)
+            else:
+                files.append(item)
+        yield (self, folders, files)
+        for folder in folders:
+            yield from folder.walk()
 
 class Folder(FolderBase, NodeMixin):
     ''' Representation of a "git folder" 
