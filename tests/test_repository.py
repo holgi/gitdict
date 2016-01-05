@@ -69,3 +69,14 @@ def test_repository_history(gitrepo):
     for commit in history:
         assert isinstance(commit, pygit2.Commit)
     assert len(history) == 1242
+
+def test_repository_diff_from_commit(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    commit = list(repo.history)[1]
+    diff = repo.diff(commit)
+    assert isinstance(diff, pygit2.Diff)
+
+def test_repository_diff_raises_error(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    with pytest.raises(gitdict.GitDictError):
+        assert repo.diff(repo._pg2_tree)

@@ -2,7 +2,7 @@
 
 import pygit2
 
-from .utils import GitDictError, get_or_none
+from .utils import GitDictError, get_or_none, ensure_oid
 from .folder import FolderBase
 
 class Repository(FolderBase):
@@ -95,6 +95,14 @@ class Repository(FolderBase):
             elif entry and parent_entry and entry.id == parent_entry.id:
                 treesame = True
         return not treesame
+        
+    def diff(self, commitish):
+        ''' get a diff for an other commmit '''
+        commit_id = ensure_oid(commitish)
+        commit = self._pg2_repo[commit_id]
+        if not isinstance(commit, pygit2.Commit):
+            raise GitDictError('Not a commit: ' + repr(commit))
+        return self._pg2_tree.diff_to_tree(commit.tree)
     
     @property
     def history(self):

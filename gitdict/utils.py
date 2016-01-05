@@ -53,6 +53,7 @@ class NodeMixin(object):
         return self._repository.commit_history_for(self.git_path)
         
     def _get_object_from_commit(self, commitish):
+        ''' retrieves an object with the same git path from an other commit '''
         commit_id = ensure_oid(commitish)
         commit = self._repository._pg2_repo[commit_id]
         if not isinstance(commit, pygit2.Commit):
