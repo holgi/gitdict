@@ -142,7 +142,7 @@ def test_fodler_not_equals(gitrepo):
 def test_commit(gitrepo):
     repo = gitdict.Repository(gitrepo)
     folder = repo['docs/recipes']
-    commit = folder.commit
+    commit = folder.last_commit
     assert isinstance(commit, pygit2.Commit)
     message = commit.message
     assert message.startswith('Fix indent error')

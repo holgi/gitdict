@@ -43,7 +43,7 @@ class NodeMixin(object):
         return os.path.join(self.__parent__.git_path, self.__name__)
     
     @property
-    def commit(self):
+    def last_commit(self):
         ''' the commit where the file was last changed '''
         return self._repository.last_commit_for(self.git_path)
 

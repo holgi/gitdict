@@ -36,8 +36,8 @@ class Repository(FolderBase):
             ref = self._pg2_repo.lookup_branch(branch, pygit2.GIT_BRANCH_LOCAL)
             if not ref:
                 raise GitDictError('could not find local branch ' + branch)
-        self.commit = self._pg2_repo[ref.target]
-        self._pg2_tree = self.commit.tree
+        self.last_commit = self._pg2_repo[ref.target]
+        self._pg2_tree = self.last_commit.tree
         # the shorthand name of the reference is used as a branch name
         # this will also point to a branch from git head.
         self.branch = ref.shorthand
@@ -62,7 +62,7 @@ class Repository(FolderBase):
         '''
         sorting = pygit2.GIT_SORT_TIME | pygit2.GIT_SORT_REVERSE
         history = []
-        walker = self._pg2_repo.walk(self.commit.id, sorting)
+        walker = self._pg2_repo.walk(self.last_commit.id, sorting)
         for commit in walker:
             if len(commit.parents) > 1:
                 continue
@@ -109,7 +109,7 @@ class Repository(FolderBase):
         ''' history of all commits and ids for the repository '''
         sorting = pygit2.GIT_SORT_TOPOLOGICAL
         history = []
-        for commit in self._pg2_repo.walk(self.commit.id, sorting):
+        for commit in self._pg2_repo.walk(self.last_commit.id, sorting):
             history.append(commit)
         return history
     

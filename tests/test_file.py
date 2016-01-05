@@ -49,8 +49,8 @@ def test_file_get_text_specific_encoding(gitrepo):
 def test_file_commit(gitrepo):
     repo = gitdict.Repository(gitrepo)
     gf = repo['README.rst']
-    commit = gf.commit
-    assert isinstance(gf.commit, pygit2.Commit)
+    commit = gf.last_commit
+    assert isinstance(gf.last_commit, pygit2.Commit)
     message = commit.message
     assert message.startswith("Release 0.23.2")
     
