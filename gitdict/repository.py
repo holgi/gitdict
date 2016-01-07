@@ -2,12 +2,75 @@
 
 import pygit2
 
-from .utils import GitDictError, get_or_none, ensure_oid
+from .utils import GitDictError, dict_like_get , ensure_oid
 from .folder import FolderBase
 
 class Repository(FolderBase):
     ''' Simple representation of a git repository and "root folder" 
     
+    Example:
+        repo = Repository('path/to/repo')
+        file = Repository['some_file.txt']
+        folder = Repository['some_folder']
+    
+    These methods have a different implemetation from the ones in the 
+    Folder class.
+    
+    derived from FolderBase:
+    'name' in repo:
+        returns true, if a child object is available, else False
+    repo['name']  
+        retrive child object or raise KeyError
+    repo.get('name', default=None)
+        retrive child object or return default value
+    repo.keys():
+        returns an iterator with the names of all child objects
+    repo.values()
+        returns an iterator with all child objects
+    repo.values()
+        returns an iterator with tuples of (name, child object) 
+    repo.len()
+        the number of child objects
+    for name in repo
+        iterator interface
+    something == repo
+        compare if something is the same folder
+    something != repo
+        compare if something is not the same folder
+    repo.walk()
+        similar to os.walk() returns iterator of tuples 
+        (parent_folder, [contained folders], [contained files])
+    
+    interface like utils.NodeMixin:
+    repo.git_path
+        path of the object in the git repository
+    repo.last_commit
+        last commit that affected the folder
+    repo.history
+        list of commits that affected the folder (newest first)
+    
+    repo.is_bare
+        check if this is a bare repository
+    repo.path
+        path to the repository
+    repo.branch
+        branch name that was opened
+    repo.branches
+        list all local branches in the git repository
+    repo.default_encoding
+        default encoding for text files
+    repo.last_commit_for(git_path):
+        last commit that affected the node located at git_path
+    repo.commit_history_for(git_path)
+        all commits that affected the node located at git_path
+    repo.diff(committish)
+        pygit2.diff object for the folder compared to the commit
+        committish might be a pygit2.Commit or an pygit2.Oid like id
+    
+    with repo as r:
+        syntactic sugar, context manager interface
+    
+    repo.__name__, repo.__parent__: pyramid traversal implementation
     '''
     
     __name__   = None
@@ -43,6 +106,27 @@ class Repository(FolderBase):
         self.branch = ref.shorthand
         self.path = self._pg2_repo.path
     
+    # interface like utils.NodeMixin
+    @property
+    def history(self):
+        ''' history of all commits and ids for the repository '''
+        sorting = pygit2.GIT_SORT_TOPOLOGICAL
+        history = []
+        for commit in self._pg2_repo.walk(self.last_commit.id, sorting):
+            history.append(commit)
+        return history
+    
+    @property
+    def git_path(self):
+        ''' the path of the git object in the repository '''
+        return ''
+        
+    @property
+    def is_bare(self):
+        ''' is the repository in use a bare repository? '''
+        return self._pg2_repo.is_bare
+    
+    @property
     def branches(self):
         ''' list all local branches in the git repository '''
         flag = pygit2.GIT_BRANCH_LOCAL
@@ -56,7 +140,7 @@ class Repository(FolderBase):
         raise GitDictError('No commit for: ' + git_path)
     
     def commit_history_for(self, git_path):
-        ''' history of all commits and ids for a given git path 
+        ''' history of all commits for a given git path 
         
         with a lot of help from https://github.com/gollum/rugged_adapter/
         '''
@@ -79,13 +163,13 @@ class Repository(FolderBase):
         
         with a lot of help from https://github.com/gollum/rugged_adapter/
         '''
-        entry = get_or_none(commit.tree, git_path)
+        entry = dict_like_get(commit.tree, git_path)
         if not commit.parents:
             # This is the root commit, return true if it has path in its tree
             return True if entry else False
         treesame = False
         for parent in commit.parents:
-            parent_entry = get_or_none(parent.tree, git_path)
+            parent_entry =  dict_like_get(parent.tree, git_path)
             # Only follow the first TREESAME parent for merge commits
             if treesame:
                 walker.hide(parent.id)
@@ -103,25 +187,6 @@ class Repository(FolderBase):
         if not isinstance(commit, pygit2.Commit):
             raise GitDictError('Not a commit: ' + repr(commit))
         return self._pg2_tree.diff_to_tree(commit.tree)
-    
-    @property
-    def history(self):
-        ''' history of all commits and ids for the repository '''
-        sorting = pygit2.GIT_SORT_TOPOLOGICAL
-        history = []
-        for commit in self._pg2_repo.walk(self.last_commit.id, sorting):
-            history.append(commit)
-        return history
-    
-    @property
-    def git_path(self):
-        ''' the path of the git object in the repository '''
-        return ''
-        
-    @property
-    def is_bare(self):
-        ''' is the repository in use a bare repository? '''
-        return self._pg2_repo.is_bare
     
     def _child_factory(self, tree_entry):
         ''' create a gitdict object from a pygit2 tree entry '''

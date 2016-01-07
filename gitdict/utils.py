@@ -18,7 +18,7 @@ def ensure_oid(something):
     raise GitDictError('Unconvertable Oid: ' + repr(something))
 
 
-def get_or_none(dict_like, what):
+def dict_like_get(dict_like, what, default=None):
     ''' returns a dict entry or None
     
     Unfortunately, the pygit2.Tree object does not implement a get() method 
@@ -28,14 +28,27 @@ def get_or_none(dict_like, what):
     try:
         return dict_like[what]
     except KeyError:
-        return None
+        return default
         
 
 class GitDictError(Exception):
+    ''' exception used in gitdict package '''
     pass
 
 
 class NodeMixin(object):
+    ''' methods shared between Folder and File classes
+     
+    The Repository class uses the same interface, but has adifferent 
+    implementation.
+    
+    file_or_folder.git_path
+        path of the object in the git repository
+    file_or_folder.last_commit
+        last commit that affected the file or folder
+    file_or_folder.history
+        list of commits that affected the file or folder (newest first)
+    '''
 
     @property
     def git_path(self):
@@ -59,7 +72,7 @@ class NodeMixin(object):
         if not isinstance(commit, pygit2.Commit):
             raise GitDictError('Not a commit: ' + repr(commit))
         path = self.git_path
-        entry = get_or_none(commit.tree, path)
+        entry = dict_like_get(commit.tree, path)
         return self._repository._pg2_repo[entry.id] if entry else None
 
         

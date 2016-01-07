@@ -56,7 +56,7 @@ def test_repository_git_path(gitrepo):
 
 def test_repository_branches(gitrepo):
     repo = gitdict.Repository(gitrepo)
-    assert repo.branches() == ['gh-pages', 'master', 'merge-commits', 'pr346']
+    assert repo.branches == ['gh-pages', 'master', 'merge-commits', 'pr346']
 
 def test_repository_last_commit_for_unknown_path(gitrepo):
     repo = gitdict.Repository(gitrepo)

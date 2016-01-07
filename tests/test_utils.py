@@ -13,15 +13,17 @@ def example():
     assert 0
 
 
-def test_get_or_none_known_element():
+def test_dict_like_get_known_element():
     d = {'a': 'some value'}
-    value = gitdict.utils.get_or_none(d, 'a')
+    value = gitdict.utils.dict_like_get(d, 'a')
     assert value == 'some value'
 
-def test_get_or_none_unknown_element():
+def test_dict_like_get_unknown_element():
     d = dict()
-    value = gitdict.utils.get_or_none(d, 'a')
+    value = gitdict.utils.dict_like_get(d, 'a')
     assert value is None
+    value = gitdict.utils.dict_like_get(d, 'a', default='b')
+    assert value == 'b'
 
 def test_ensure_oid_form_oid():
     something = pygit2.Oid(raw=b"1")

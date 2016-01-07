@@ -46,7 +46,7 @@ def test_file_get_text_specific_encoding(gitrepo):
     assert gf.decode('ascii') == '*.h text eol=lf\n'
     assert gf.encoding == 'ascii'
 
-def test_file_commit(gitrepo):
+def test_file_last_commit(gitrepo):
     repo = gitdict.Repository(gitrepo)
     gf = repo['README.rst']
     commit = gf.last_commit
