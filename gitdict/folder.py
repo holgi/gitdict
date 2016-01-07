@@ -24,14 +24,14 @@ class FolderBase(collections.abc.Mapping):
         retrive child object or raise KeyError
     folder.get('name', default=None)
         retrive child object or return default value
+    len(folder)
+        the number of child objects
     folder.keys():
         returns an iterator with the names of all child objects
     folder.values()
         returns an iterator with all child objects
-    folder.values()
+    folder.items()
         returns an iterator with tuples of (name, child object) 
-    folder.len()
-        the number of child objects
     for name in folder
         iterator interface
     something == folder
@@ -170,7 +170,7 @@ class Folder(FolderBase, NodeMixin):
         returns an iterator with all child objects
     folder.values()
         returns an iterator with tuples of (name, child object) 
-    folder.len()
+    len(folder)
         the number of child objects
     for name in folder
         iterator interface

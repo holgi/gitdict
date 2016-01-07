@@ -29,7 +29,7 @@ class Repository(FolderBase):
         returns an iterator with all child objects
     repo.values()
         returns an iterator with tuples of (name, child object) 
-    repo.len()
+    len(repo)
         the number of child objects
     for name in repo
         iterator interface
