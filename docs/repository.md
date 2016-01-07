@@ -10,7 +10,7 @@ I tried to keep the API consistent accross the `Repository`, `Folder` and `File`
 Opening a Repository
 --------------------
 
-```
+```python
 import gitdict
 repo = gitdict.Repository('path/to/repository')
 
@@ -31,7 +31,7 @@ Working with branches
 
 If no branch is spezified when opening a repository, HEAD is used.
 
-```
+```python
 # opening a branch of a repository
 import gitdict
 repo = gitdict.Repository('path/to/repository', branch='branch-name')
@@ -49,7 +49,7 @@ Retrieving single Folders and Files
 
 In this regard, the `Repository` has the same interface as the [`Folder`][gd_folder] class. This API is derived from the [abstract base class][abc] for unmutable mappings and therfore provides a [dict][] like read-only access to child objects.
 
-```
+```python
 # check if a child object exists
 if 'name' in repo:
     pass
@@ -73,7 +73,7 @@ file = repo['some/path/inside/git/repo.txt']
 Work with all contained objects
 -------------------------------
 
-```
+```python
 # how many child objects are there?
 number_of_childs = len(repo)
 
@@ -97,7 +97,7 @@ for parent_folder, contained_folders, contained_files in repo.walk()
 Getting information about changes
 ---------------------------------
 
-```
+```python
 # last commmit that introduced a change
 commit = repo.last_commit
 
