@@ -131,7 +131,7 @@ history_for_object = repo.commit_history_for('some/git/path.txt')
 [git]:       http://git-scm.com
 [abc]:       https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping
 [dict]:      https://docs.python.org/3.5/library/stdtypes.html#mapping-types-dict
-[gitdict]:   http://example.com
+[gitdict]:   https://github.com/holgi/gitdict
 [gd_repo]:   repository.md
 [gd_folder]: folder.md
 [gd_file]:   file.md

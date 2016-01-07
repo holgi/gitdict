@@ -71,7 +71,7 @@ diff = file.diff('34ab790c56d37b34570d2a26a1f9c803e72003c3')
 
 [git]:       http://git-scm.com
 [abc]:       https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping
-[gitdict]:   http://example.com
+[gitdict]:   https://github.com/holgi/gitdict
 [gd_repo]:   repository.md
 [gd_folder]: folder.md
 [gd_file]:   file.md

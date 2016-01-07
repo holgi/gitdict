@@ -91,7 +91,7 @@ In other words: Works for me ;-)
 [pygit2]:    http://www.pygit2.org
 [python]:    https://www.python.org
 [git]:       http://git-scm.com
-[gitdict]:   http://example.com
+[gitdict]:   https://github.com/holgi/gitdict
 [dict]:      https://docs.python.org/3.5/library/stdtypes.html#mapping-types-dict
 [pyramid]:   http://www.pylonsproject.org
 [traversal]: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/traversal.html
