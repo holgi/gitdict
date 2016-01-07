@@ -13,7 +13,7 @@ The documentation consists mainly of examples how to use the package.
 Introduction by Example
 -----------------------
 
-```
+```python
 # open a Repository
 import gitdict
 repo = Repository('/path/to/gitdict.git')

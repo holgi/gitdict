@@ -7,7 +7,7 @@ In the [gitdict][] package, the `File` class is like a 'file' in the classical f
 Getting a File
 --------------
 
-```
+```python
 import gitdict
 repo = gitdict.Repository('path/to/repository')
 
@@ -18,7 +18,7 @@ file.git_path == 'docs/readme.txt'
 Working with File Data
 ----------------------
 
-```
+```python
 # getting the (raw) binary data
 binary_data = file.data
 
@@ -42,7 +42,7 @@ text_specific_encoding == file.decode()
 Getting information about changes
 ---------------------------------
 
-```
+```python
 # last commmit that introduced a change
 commit = file.last_commit
 

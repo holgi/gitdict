@@ -9,7 +9,7 @@ Retrieving single Folders and Files
 
 In this regard, the `Folder` has the same interface as the [`Repository`][gd_repo] class. This API is derived from the [abstract base class][abc] for unmutable mappings and therfore provides a [dict][] like read-only access to child objects.
 
-```
+```python
 import gitdict
 repo = gitdict.Repository('path/to/git/repo.git')
 folder = repo['docs']
@@ -37,7 +37,7 @@ sub_folder.git_path == 'folder/sub_folder'
 Work with all contained objects
 -------------------------------
 
-```
+```python
 # how many child objects are there?
 number_of_childs = len(folder)
 
@@ -61,7 +61,7 @@ for parent_folder, contained_folders, contained_files in folder.walk()
 Getting information about changes
 ---------------------------------
 
-```
+```python
 # last commmit that introduced a change
 commit = folder.last_commit
 
