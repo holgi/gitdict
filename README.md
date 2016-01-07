@@ -1,7 +1,7 @@
 gitdict
 =======
 
-Access a git repository like a pyhton dict, based on pygit2.
+Access a git repository like a pyhton dict, based on [pygit2][].
 
 
 opening a git repository
@@ -79,3 +79,5 @@ notes to self
 -------------
 
 - pygit2.Repository.default_signature: Signatur of repo-config
+
+[pygit2]:    http://www.pygit2.org

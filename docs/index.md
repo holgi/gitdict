@@ -76,6 +76,8 @@ The `Repository`, `Folder` have a dict-like read-only access to contained object
 Note of Warning
 ---------------
 
+If the installation with `python3 setup.py` doesn't work, try to install pygit2 manually first. On my setup the cffi-package was missing.
+
 This package was developed on Mac OS X and [Python 3.5][py35]. There is currently no such thing as testing on other platforms or Python versions. 
 
 In other words: Works for me ;-)
