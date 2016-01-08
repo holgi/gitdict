@@ -7,13 +7,13 @@ In the [gitdict][] package, the `File` class is like a 'file' in the classical f
 Getting a File
 --------------
 
-```python
-import gitdict
-repo = gitdict.Repository('path/to/repository')
+    ```python
+    import gitdict
+    repo = gitdict.Repository('path/to/repository')
 
-file = repo['docs']['readme.txt']
-file.git_path == 'docs/readme.txt'
-```
+    file = repo['docs']['readme.txt']
+    file.git_path == 'docs/readme.txt'
+    ```
 
 Working with File Data
 ----------------------
