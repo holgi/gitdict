@@ -77,12 +77,15 @@ The `Repository`, `Folder` have a dict-like read-only access to contained object
 Note of Warning
 ---------------
 
-If the installation with `python3 setup.py` doesn't work, try to install pygit2 manually first. On my setup the cffi-package was missing.
-
 This package was developed on Mac OS X and [Python 3.5][py35]. There is currently no such thing as testing on other platforms or Python versions. 
+
+If the installation with `python3 setup.py` doesn't work, try to install pygit2 manually first. On my setup the cffi-package was missing.
 
 In other words: Works for me ;-)
 
+### License?
+
+Well, I decided to go with the [Simplified BSD License][bsd].
 
 ### Continue reading
 
@@ -99,6 +102,7 @@ In other words: Works for me ;-)
 [pyramid]:   http://www.pylonsproject.org
 [traversal]: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/traversal.html
 [py35]:      https://docs.python.org/3/
+[bsd]:       http://opensource.org/licenses/BSD-2-Clause
 [gd_repo]:   docs/repository.md
 [gd_folder]: docs/folder.md
 [gd_file]:   docs/file.md
