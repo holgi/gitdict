@@ -15,7 +15,7 @@ import io
 here = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
-with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 # version string parsing from __init___.py
@@ -50,7 +50,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    # url='https://github.com/pypa/sampleproject',
+    url='https://github.com/holgi/gitdict',
 
     # Author details
     author='Holger Frey',
@@ -65,7 +65,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
 
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
