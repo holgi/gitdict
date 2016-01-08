@@ -89,8 +89,8 @@ for name in repo.keys():
     pass
 
 # use a repo just like os.walk, returns iterator of tuples 
-# (parent_folder, [contained folders], [contained files])
-for parent_folder, contained_folders, contained_files in repo.walk()
+# (current_folder, [contained folders], [contained files])
+for current_folder, contained_folders, contained_files in repo.walk()
     pass
 ```
 

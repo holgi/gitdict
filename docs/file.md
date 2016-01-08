@@ -7,13 +7,13 @@ In the [gitdict][] package, the `File` class is like a 'file' in the classical f
 Getting a File
 --------------
 
-    ```python
-    import gitdict
-    repo = gitdict.Repository('path/to/repository')
+```python
+import gitdict
+repo = gitdict.Repository('path/to/repository')
 
-    file = repo['docs']['readme.txt']
-    file.git_path == 'docs/readme.txt'
-    ```
+file = repo['docs']['readme.txt']
+file.git_path == 'docs/readme.txt'
+```
 
 Working with File Data
 ----------------------
@@ -23,9 +23,9 @@ Working with File Data
 binary_data = file.data
 
 # since mostly text files are stored, 
-# there are some convenient methods
+# there are some convenience methods
 
-# defaults to repo.defaul_encoding that defaults to 'utf-8'
+# defaults to Repository.default_encoding that defaults to 'utf-8'
 file.encoding = 'utf-8' 
 
 # uses file.encoding
@@ -35,8 +35,7 @@ data_as_text = file.text
 text_specific_encoding = file.decode('utf-16') 
 # is the same as
 file.encoding = 'utf-16'
-text_specific_encoding = file.text 
-text_specific_encoding == file.decode() 
+text_specific_encoding == file.text 
 ```
 
 Getting information about changes

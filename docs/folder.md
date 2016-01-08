@@ -19,7 +19,7 @@ if 'name' in folder:
     pass
 
 # retrive a child object or raise KeyError
-folder = file['readme.md']
+file = folder['readme.md']
 
 # retrive a child object or 
 # return another  value if it doesn't exist, defaults to None
@@ -47,14 +47,14 @@ objects = folder.values() # all child objects
 items = folder.items()    # tuples of (name, child object)
 
 # these two are the same
-for folder in folder:
+for name in folder:
     pass
-for folder in folder.keys():
+for name in folder.keys():
     pass
 
 # use a folder just like os.walk, returns iterator of tuples 
-# (parent_folder, [contained folders], [contained files])
-for parent_folder, contained_folders, contained_files in folder.walk()
+# (current_folder, [contained folders], [contained files])
+for current_folder, contained_folders, contained_files in folder.walk()
     pass
 ```
 
