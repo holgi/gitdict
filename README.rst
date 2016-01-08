@@ -1,7 +1,7 @@
 gitdict – Dict Like Access to a Git Repository
 ==============================================
 
-The great `pygit2 <http://www.pygit2.org>`__ enables working with
+The great `pygit2 <http://www.pygit2.org>`__ package enables working with
 `python <https://www.python.org>`__ on a `git <http://git-scm.com>`__
 repository on a fast but low level basis.
 
