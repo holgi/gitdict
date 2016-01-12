@@ -101,7 +101,8 @@ This package was developed on Mac OS X and `Python
 testing on other platforms or Python versions.
 
 If the installation with ``python3 setup.py`` doesn't work, try to
-install pygit2 manually first. On my setup the cffi-package was missing.
+install pygit2 manually first - this is the tricky part. E.g. on my setup 
+the cffi-package was missing.
 
 In other words: Works for me ;-)
 

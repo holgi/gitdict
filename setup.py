@@ -95,7 +95,6 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'cffi',             # this is not a requirement by gitdict but by pygit2
         'pygit2>=0.23.2',
     ],
 
