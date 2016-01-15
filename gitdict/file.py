@@ -32,10 +32,12 @@ class File(NodeMixin):
     file.decode(encoding=None)
         decode the binary content of the file
         if encoding is None, file.encoding is used
-        if encoding is not None, file.encoding is set to encoding
-    file.diff(committish)
-        pygit2.patch object for the file compared to the commit
+        if encoding is not None, file.encoding is set to encoding 
+    file.diff(committish, reference=None)
+        pygit2.diff object for the folder compared to the commit
         committish might be a pygit2.Commit or an pygit2.Oid like id
+        if reference is also a committish, the diff is between the two commits 
+
     
     file.__name__, file.__parent__: pyramid traversal implementation
     '''
@@ -73,11 +75,23 @@ class File(NodeMixin):
             self.encoding = encoding
         return self._pg2_blob.data.decode(self.encoding)
     
-    def diff(self, commitish):
-        ''' get a diff for the same file in an other commmit '''
-        pg2_object = self._get_object_from_commit(commitish)
-        if pg2_object and not isinstance(pg2_object, pygit2.Blob):
-            # this might only happen, if the git path pointed in the requested
-            # commit to a tree instead of a blob
-            raise GitDictError('Diff impossible for: ' + repr(pg2_object))
-        return self._pg2_blob.diff(pg2_object)
+    def diff(self, commitish, reference=None):
+        ''' get a diff for the same file in other commmit(s)
+        
+        if reference is None, it is the diff to last comitted version
+        if reference is not None, the diff between the two commits
+        '''
+        pg2_diff_blob = self._get_object_from_commit(commitish)
+        if reference is None:
+            pg2_ref_blob = self._pg2_blob
+        else:
+            pg2_ref_blob = self._get_object_from_commit(reference)
+        try:
+            return pg2_ref_blob.diff(pg2_diff_blob)
+        except (TypeError, AttributeError):
+            # this might happen, if the git path pointed in the requested
+            # commit to a tree instead of a blob or a commit does not contain
+            # the path requessted
+            msg = 'Diff impossible between %s and %s '
+            raise GitDictError(msg % (pg2_diff_blob, pg2_ref_blob))
+

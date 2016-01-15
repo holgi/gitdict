@@ -175,6 +175,23 @@ def test_folder_diff_from_commit(gitrepo):
     commit = list(folder.history)[1]
     diff = folder.diff(commit)
     assert isinstance(diff, pygit2.Diff)
+    assert 'index 310e236..6026a23 100644' in diff.patch
+
+def test_folder_diff_between_commits(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    folder = repo['docs/recipes']
+    commit1 = list(folder.history)[1]
+    commit2 = list(folder.history)[3]
+    diff = folder.diff(commit1, commit2)
+    assert isinstance(diff, pygit2.Diff)
+    assert 'index 0000000..f8ea5ca' in diff.patch
+
+def test_repository_diff_raises_error(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    folder = repo['docs/recipes']
+    gf = repo['docs/recipes/git-show.rst']
+    with pytest.raises(gitdict.GitDictError):
+        assert folder.diff(gf)
 
 def test_folder_walk(gitrepo):
     repo = gitdict.Repository(gitrepo)

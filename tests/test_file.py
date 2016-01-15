@@ -74,6 +74,16 @@ def test_file_diff_from_commit(gitrepo):
     commit = list(gf.history)[1]
     diff = gf.diff(commit)
     assert isinstance(diff, pygit2.Patch)
+    assert diff.line_stats == (15, 2, 9)
+
+def test_file_diff_between_commits(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['docs/recipes/git-show.rst']
+    commit1 = list(gf.history)[1]
+    commit2 = list(gf.history)[2]
+    diff = gf.diff(commit1, commit2)
+    assert isinstance(diff, pygit2.Patch)
+    assert diff.line_stats == (14, 4, 4)
 
 def test_file_get_object_from_commit_raises_error(gitrepo):
     repo = gitdict.Repository(gitrepo)

@@ -72,8 +72,9 @@ This is common in ``Repository``, ``Folder`` and ``File``
 -  ``git_path``: path of the object in the git repository
 -  ``last_commit``: last commit that introduced a change
 -  ``history``: list of commits, that introduced changes, newest first
--  ``diff(commit)``: difference between the current object and a
-   previous version
+-  ``diff(commit, reference=None)``: difference between the current object 
+    and a previous version, if reference is None, the current commit is used
+    to calculate the commit
 
 The ``Repository``, ``Folder`` have a dict-like read-only access to
 contained objects in common:

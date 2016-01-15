@@ -63,9 +63,10 @@ class Repository(FolderBase):
         last commit that affected the node located at git_path
     repo.commit_history_for(git_path)
         all commits that affected the node located at git_path
-    repo.diff(committish)
+    repo.diff(committish, reference=None)
         pygit2.diff object for the folder compared to the commit
         committish might be a pygit2.Commit or an pygit2.Oid like id
+        if reference is also a committish, the diff is between the two commits 
     
     with repo as r:
         syntactic sugar, context manager interface
@@ -179,15 +180,28 @@ class Repository(FolderBase):
             elif entry and parent_entry and entry.id == parent_entry.id:
                 treesame = True
         return not treesame
+    
+    def diff(self, commitish, reference=None):
+        ''' get a pygit2.diff for the same folder in an other commmit 
         
-    def diff(self, commitish):
-        ''' get a diff for an other commmit '''
+        if reference is None, it is the diff to last comitted version
+        if reference is not None, the diff between the two commits
+        '''
         commit_id = ensure_oid(commitish)
         commit = self._pg2_repo[commit_id]
-        if not isinstance(commit, pygit2.Commit):
-            raise GitDictError('Not a commit: ' + repr(commit))
-        return self._pg2_tree.diff_to_tree(commit.tree)
-    
+        if reference is None:
+            pg2_ref_commit = self.last_commit
+        else:
+            reference_id = ensure_oid(reference)
+            pg2_ref_commit = self._pg2_repo[reference_id]
+        try:
+            return pg2_ref_commit.tree.diff_to_tree(commit.tree)
+        except (TypeError, AttributeError):
+            # this might happen, either commitish or reference do not point
+            # to a commit
+            msg = 'Diff impossible between %s and %s '
+            raise GitDictError(msg % (commit, pg2_ref_commit))
+            
     def _child_factory(self, tree_entry):
         ''' create a gitdict object from a pygit2 tree entry '''
         child_class = self.child_map[tree_entry.type]

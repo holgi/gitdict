@@ -71,8 +71,7 @@ class NodeMixin(object):
         commit = self._repository._pg2_repo[commit_id]
         if not isinstance(commit, pygit2.Commit):
             raise GitDictError('Not a commit: ' + repr(commit))
-        path = self.git_path
-        entry = dict_like_get(commit.tree, path)
+        entry = dict_like_get(commit.tree, self.git_path)
         return self._repository._pg2_repo[entry.id] if entry else None
 
         

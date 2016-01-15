@@ -75,6 +75,15 @@ def test_repository_diff_from_commit(gitrepo):
     commit = list(repo.history)[1]
     diff = repo.diff(commit)
     assert isinstance(diff, pygit2.Diff)
+    assert 'index 94f7626..57dad00 100644' in diff.patch
+
+def test_repository_diff_between_commits(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    commit1 = list(repo.history)[1]
+    commit2 = list(repo.history)[2]
+    diff = repo.diff(commit1, commit2)
+    assert isinstance(diff, pygit2.Diff)
+    assert 'index 1fa6a72..0d96930 100644' in diff.patch
 
 def test_repository_diff_raises_error(gitrepo):
     repo = gitdict.Repository(gitrepo)

@@ -190,9 +190,10 @@ class Folder(FolderBase, NodeMixin):
     folder.history
         list of commits that affected the folder (newest first)
     
-    folder.diff(committish)
+    folder.diff(committish, reference=None)
         pygit2.diff object for the folder compared to the commit
         committish might be a pygit2.Commit or an pygit2.Oid like id
+        if reference is also a committish, the diff is between the two commits 
     
     folder.__name__, folder.__parent__: pyramid traversal implementation
     '''
@@ -215,14 +216,25 @@ class Folder(FolderBase, NodeMixin):
         pg2_object = self._repository._pg2_repo[tree_entry.id]
         return child_class(tree_entry.name, self, self._repository, pg2_object)
     
-    def diff(self, commitish):
-        ''' get a pygit2.diff for the same folder in an other commmit '''
-        pg2_object = self._get_object_from_commit(commitish)
-        if pg2_object and not isinstance(pg2_object, pygit2.Tree):
-            # this might only happen, if the git path pointed in the requested
-            # commit to a blob instead of a tree
-            raise GitDictError('Diff impossible for: ' + repr(pg2_object))
-        return self._pg2_tree.diff_to_tree(pg2_object)
+    def diff(self, commitish, reference=None):
+        ''' get a pygit2.diff for the same folder in an other commmit 
+        
+        if reference is None, it is the diff to last comitted version
+        if reference is not None, the diff between the two commits
+        '''
+        pg2_diff_tree = self._get_object_from_commit(commitish)
+        if reference is None:
+            pg2_ref_tree = self._pg2_tree
+        else:
+            pg2_ref_tree = self._get_object_from_commit(reference)
+        try:
+            return pg2_ref_tree.diff_to_tree(pg2_diff_tree)
+        except (TypeError, AttributeError):
+            # this might happen, if the git path pointed in the requested
+            # commit to a tree instead of a blob or a commit does not contain
+            # the path requessted
+            msg = 'Diff impossible between %s and %s '
+            raise GitDictError(msg % (pg2_diff_tree, pg2_ref_tree))
     
 
 # some things have to be added afterwards
