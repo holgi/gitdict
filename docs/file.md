@@ -34,8 +34,13 @@ data_as_text = file.text
 # sets specific file.enconding and decodes with the encoding
 text_specific_encoding = file.decode('utf-16') 
 # is the same as
-file.encoding = 'utf-16'
+file.encoding = 'utf-16':
 text_specific_encoding == file.text 
+
+# iterate over lines in the file
+# just like with the standard open() function
+for line in file:
+    print(line)
 ```
 
 Getting information about changes

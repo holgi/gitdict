@@ -33,6 +33,9 @@ Introduction by Example
     # access to file data
     file.data == b'gitdict - Dict Like Access […]'
     file.text == 'gitdict - Dict Like Access […]'
+    # iterate over lines in a file, just like with standard python open()
+    for line in file:
+        do_something(line)
 
     # data about the last change to the file
     last_change = file.last_commit

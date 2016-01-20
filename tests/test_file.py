@@ -90,3 +90,20 @@ def test_file_get_object_from_commit_raises_error(gitrepo):
     gf = repo['docs/recipes/git-show.rst']
     with pytest.raises(gitdict.GitDictError):
         assert gf._get_object_from_commit(repo._pg2_tree)
+
+def test_file_iterator(gitrepo):
+    repo = gitdict.Repository(gitrepo)
+    gf = repo['docs/recipes/git-show.rst']
+    lines = [
+        '*' * 70,
+        'git-show',
+        '*' * 70,
+        '',
+        '-' * 70,
+        'Showing a commit',
+        '-' * 70,
+        '',
+        '.. code-block:: bash']
+    expected = [l+'\n' for l in lines]
+    result = [line for line in gf]
+    assert result[:9] == expected

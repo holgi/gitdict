@@ -2,6 +2,7 @@
 
 import os
 import collections
+import io
 
 import pygit2
 
@@ -94,4 +95,13 @@ class File(NodeMixin):
             # the path requessted
             msg = 'Diff impossible between %s and %s '
             raise GitDictError(msg % (pg2_diff_blob, pg2_ref_blob))
+    
+    def __iter__(self):
+        ''' iterating over lines in a text file 
+        
+        just like with the standard file object. 
+        uses the encoding set in self.encoding 
+        (defaults to Repository.default_encoding defaults to utf-8)
+        '''
+        return io.StringIO(self.text)
 
