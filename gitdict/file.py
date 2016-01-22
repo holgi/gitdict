@@ -88,7 +88,7 @@ class File(NodeMixin):
         else:
             pg2_ref_blob = self._get_object_from_commit(reference)
         try:
-            return pg2_ref_blob.diff(pg2_diff_blob)
+            return pg2_diff_blob.diff(pg2_ref_blob)
         except (TypeError, AttributeError):
             # this might happen, if the git path pointed in the requested
             # commit to a tree instead of a blob or a commit does not contain

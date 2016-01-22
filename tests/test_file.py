@@ -74,7 +74,7 @@ def test_file_diff_from_commit(gitrepo):
     commit = list(gf.history)[1]
     diff = gf.diff(commit)
     assert isinstance(diff, pygit2.Patch)
-    assert diff.line_stats == (15, 2, 9)
+    assert diff.line_stats == (15, 9, 2)
 
 def test_file_diff_between_commits(gitrepo):
     repo = gitdict.Repository(gitrepo)
