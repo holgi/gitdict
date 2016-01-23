@@ -13,7 +13,9 @@ One of the main goals - beside providing a nice git access - is to use
 this in a `pyramid <http://www.pylonsproject.org>`__ web application
 with a
 `traversal <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/traversal.html>`__
-style routing. Of cause, it can also be used otherwise ;-)
+style routing. There is a small 
+`example pyramid project <https://github.com/holgi/gitdict_example`__ to 
+demonstrate this. Of cause, the package can also be used otherwise ;-)
 
 The documentation consists mainly of examples.
 
