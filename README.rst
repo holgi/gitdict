@@ -14,7 +14,7 @@ this in a `pyramid <http://www.pylonsproject.org>`__ web application
 with a
 `traversal <http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/traversal.html>`__
 style routing. There is a small 
-`example pyramid project <https://github.com/holgi/gitdict_example`__ to 
+`example pyramid project <https://github.com/holgi/gitdict_example>`__ to 
 demonstrate this. Of cause, the package can also be used otherwise ;-)
 
 The documentation consists mainly of examples.
