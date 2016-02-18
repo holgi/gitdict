@@ -135,10 +135,11 @@ class Repository(FolderBase):
     
     def last_commit_for(self, git_path):
         ''' searches the latest commit for a given git path '''
-        history = list(self.commit_history_for(git_path))
-        if len(history) > 0:
-            return history[0]
-        raise GitDictError('No commit for: ' + git_path)
+        try:
+            history = self.commit_history_for(git_path)
+            return history.__next__()
+        except StopIteration:
+            raise GitDictError('No commit for: ' + git_path)
     
     def commit_history_for(self, git_path):
         ''' history of all commits for a given git path 
