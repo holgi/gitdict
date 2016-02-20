@@ -80,10 +80,10 @@ class Repository(FolderBase):
     default_encoding = 'utf-8'
     
     def __init__(self, repository_path, branch=None):
-        ''' initialization of the repository class 
+        ''' Initialization of the repository class 
         
         repository_path: path to git repository to use
-        branch:          local git branch to work on. 
+        branch:          local git branch to work on 
                          if no branch is provided, the git head will be used
         
         raises GitDictError if the repository could not be opened or the branch
@@ -110,7 +110,7 @@ class Repository(FolderBase):
     # interface like utils.NodeMixin
     @property
     def history(self):
-        ''' history of all commits and ids for the repository '''
+        ''' Retrun a list of commits in the repository, newest first. '''
         sorting = pygit2.GIT_SORT_TOPOLOGICAL
         history = []
         for commit in self._pg2_repo.walk(self.last_commit.id, sorting):
@@ -119,22 +119,26 @@ class Repository(FolderBase):
     
     @property
     def git_path(self):
-        ''' the path of the git object in the repository '''
+        ''' Return the path for the root folder in the repository. 
+        
+        This just returns an empty string. 
+        The NodeMixin.git_path() implementation relies on this.
+        '''
         return ''
         
     @property
     def is_bare(self):
-        ''' is the repository in use a bare repository? '''
+        ''' Check if the repository in use is a bare repository. '''
         return self._pg2_repo.is_bare
     
     @property
     def branches(self):
-        ''' list all local branches in the git repository '''
+        ''' List all local branches in the git repository. '''
         flag = pygit2.GIT_BRANCH_LOCAL
         return [branch for branch in self._pg2_repo.listall_branches(flag)]
     
     def last_commit_for(self, git_path):
-        ''' searches the latest commit for a given git path '''
+        ''' Search the latest commit for a given git path in the repository. '''
         try:
             history = self.commit_history_for(git_path)
             return history.__next__()
@@ -142,9 +146,13 @@ class Repository(FolderBase):
             raise GitDictError('No commit for: ' + git_path)
     
     def commit_history_for(self, git_path):
-        ''' history of all commits for a given git path 
+        ''' Retrun a list of commits that affected the git path.
         
-        with a lot of help from https://github.com/gollum/rugged_adapter/
+        The list is in reverse chronological order.
+        
+        git_path:   path in the git repository to return the history for
+        
+        With a lot of help from https://github.com/gollum/rugged_adapter/
         '''
         sorting = pygit2.GIT_SORT_TIME | pygit2.GIT_SORT_REVERSE
         history = []
@@ -157,13 +165,17 @@ class Repository(FolderBase):
         return reversed(history)
 
     def _commit_touches_path(self, commit, git_path, walker):
-        ''' returns true if a commit introduced changes to a path
+        ''' Check if a commit introduced changes to a path.
         
         Uses commit trees to make that determination. This mimics the 
         history simplification rules that `git log` uses by default, where 
         a commit is omitted if it is TREESAME to any parent.
         
-        with a lot of help from https://github.com/gollum/rugged_adapter/
+        commit:   the commit that might have introduced a change
+        git_path: the path in the git repository to check
+        walker:   pygit2 object for iterating through the repository
+        
+        With a lot of help from https://github.com/gollum/rugged_adapter/
         '''
         entry = dict_like_get(commit.tree, git_path)
         if not commit.parents:
@@ -183,10 +195,14 @@ class Repository(FolderBase):
         return not treesame
     
     def diff(self, commitish, reference=None):
-        ''' get a pygit2.diff for the same folder in an other commmit 
+        ''' Get a pygit2.diff for the root folder in an other commmit.
         
-        if reference is None, it is the diff to last comitted version
-        if reference is not None, the diff between the two commits
+        commitish:  value that refers to a commit
+                    might be a pygit2.Commit, a pygit2.Oid or
+                    a textual representaion of a pygit2.Oid
+                    see utils.ensure_oid()
+        reference:  a commit to diff to
+                    if reference is None, use previous to last commit
         '''
         commit_id = ensure_oid(commitish)
         commit = self._pg2_repo[commit_id]
@@ -204,16 +220,16 @@ class Repository(FolderBase):
             raise GitDictError(msg % (commit, pg2_ref_commit))
             
     def _child_factory(self, tree_entry):
-        ''' create a gitdict object from a pygit2 tree entry '''
+        ''' Create a gitdict object from a pygit2 tree entry. '''
         child_class = self.child_map[tree_entry.type]
         pg2_object = self._pg2_repo[tree_entry.id]
         return child_class(tree_entry.name, self, self, pg2_object)
 
     # context manager interface
     def __enter__(self):
-        ''' context manager interface: enable class as context manager '''
+        ''' Context manager interface: Enable class as context manager. '''
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb): 
-        ''' context manager interface: propagate any exception '''
+        ''' Context manager interface: Propagate any exception. '''
         return False

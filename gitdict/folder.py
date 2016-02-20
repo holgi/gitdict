@@ -44,7 +44,7 @@ class FolderBase(collections.abc.Mapping):
     '''
 
     def __contains__(self, key):
-        ''' check if a child object exists (collections.abc.Mapping)
+        ''' Check if a child object exists (collections.abc.Mapping).
         
         key: name of child object
         '''
@@ -55,7 +55,7 @@ class FolderBase(collections.abc.Mapping):
             return False
     
     def get(self, key, default=None):
-        ''' return a child object (collections.abc.Mapping)
+        ''' Return a child object (collections.abc.Mapping).
         
         key:     name of child object
         default: return value if child object doesn't exist
@@ -66,7 +66,7 @@ class FolderBase(collections.abc.Mapping):
             return default
     
     def __getitem__(self, key):
-        ''' return a child object (collections.abc.Mapping)
+        ''' Return a child object (collections.abc.Mapping).
         
         key: name of child object
         raises KeyError, if the child object doesn't exist
@@ -85,40 +85,40 @@ class FolderBase(collections.abc.Mapping):
         return self._child_factory(entry)
     
     def _entries(self):
-        ''' pygit2 Tree Entries for all child objects 
+        ''' Return pygit2.TreeEntries for all child objects.
         
         this will return only tree entries for folders and files
         '''
         return ( e for e in self._pg2_tree if e.type in self.child_map )
     
     def keys(self):
-        ''' Names of all child objects (collections.abc.Mapping) '''
+        ''' Names of all child objects (collections.abc.Mapping). '''
         return ( e.name for e in self._entries() )
     
     def items(self):
-        ''' Tuples with name and child object (collections.abc.Mapping) '''
+        ''' Tuples with name and child object (collections.abc.Mapping). '''
         return ( (e.name, self._child_factory(e)) for e in self._entries() )
     
     def values(self):
-        ''' All child objects (collections.abc.Mapping) '''
+        ''' All child objects (collections.abc.Mapping). '''
         return ( self._child_factory(e) for e in self._entries() )
     
     def __iter__(self):
-        ''' The names of all child objects (collections.abc.Mapping) '''
+        ''' The names of all child objects (collections.abc.Mapping). '''
         return self.keys()
     
     def __len__(self):
-        ''' number of child objects (collections.abc.Mapping) '''
+        ''' Return number of child objects (collections.abc.Mapping). '''
         return len(list(self._entries()))
     
     def __eq__(self, other):
-        ''' is this equal to another object (collections.abc.Mapping) '''
+        ''' Is this equal to another object (collections.abc.Mapping). '''
         if not isinstance(other, FolderBase):
             return False
         return self._pg2_tree.id == other._pg2_tree.id
         
     def __ne__(self, other):
-        ''' is this not equal to another object (collections.abc.Mapping) '''
+        ''' Is this not equal to another object (collections.abc.Mapping). '''
         if not isinstance(other, FolderBase):
             return True
         return self._pg2_tree.id != other._pg2_tree.id
@@ -199,9 +199,10 @@ class Folder(FolderBase, NodeMixin):
     '''
     
     def __init__(self, name, parent, repository, pg2_tree):
-        ''' initialization
+        ''' Initialization of the folder.
+         
         name:       name of the folder
-        parent:     parent containing this folder
+        parent:     parent folder containing this folder
         repository: the repository
         pg2_tree:   the pygit2 object for this folder
         '''
@@ -211,16 +212,20 @@ class Folder(FolderBase, NodeMixin):
         self._pg2_tree = pg2_tree
 
     def _child_factory(self, tree_entry):
-        ''' create a gitdict object from a pygit2 tree entry '''
+        ''' Create a gitdict object from a pygit2 tree entry '''
         child_class = self.child_map[tree_entry.type]
         pg2_object = self._repository._pg2_repo[tree_entry.id]
         return child_class(tree_entry.name, self, self._repository, pg2_object)
     
     def diff(self, commitish, reference=None):
-        ''' get a pygit2.diff for the same folder in an other commmit 
+        ''' Get a pygit2.diff for the same folder in an other commmit.
         
-        if reference is None, it is the diff to last comitted version
-        if reference is not None, the diff between the two commits
+        commitish:  value that refers to a commit
+                    might be a pygit2.Commit, a pygit2.Oid or
+                    a textual representaion of a pygit2.Oid
+                    see utils.ensure_oid()
+        reference:  a commit to diff to
+                    if reference is None, use previous to last commit
         '''
         pg2_diff_tree = self._get_object_from_commit(commitish)
         if reference is None:

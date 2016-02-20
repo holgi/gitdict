@@ -44,9 +44,10 @@ class File(NodeMixin):
     '''
     
     def __init__(self, name, parent, repository, pg2_blob):
-        ''' initialization
-        name:       name of the folder
-        parent:     parent containing this folder
+        ''' Initialization of the file.
+        
+        name:       name of the file
+        parent:     parent folder containing this file
         repository: the repository
         pg2_blob:   the pygit2 object for this file
         '''
@@ -54,33 +55,41 @@ class File(NodeMixin):
         self.__parent__ = parent
         self._repository = repository
         self._pg2_blob = pg2_blob
+        # since we probably mostly deal with text files,
+        # the encoding ist set to the default encoding set in Repository class
+        # that defaults to utf-8
         self.encoding = self._repository.default_encoding
     
     @property
     def data(self):
-        ''' access to binary data '''
+        ''' Return raw binary file content '''
         return self._pg2_blob.data
     
     @property
     def text(self):
-        ''' data as decoded text, uses the currently set encoding '''
+        ''' Return file content as text, uses currently set encoding. '''
         return self.decode()
     
     def decode(self, encoding=None):
-        ''' data as decoded text, might use a specified encoding 
+        ''' Return Data as decoded text, might use a specified encoding 
         
-        if encoding is None, file.encoding is used
-        if encoding is not None, file.encoding is set to encoding
+        encoding:   encoding to be used to decode the text
+                    sets also the file.encoding property
+                    if None, file.encoding is used
         '''
         if encoding:
             self.encoding = encoding
         return self._pg2_blob.data.decode(self.encoding)
     
     def diff(self, commitish, reference=None):
-        ''' get a diff for the same file in other commmit(s)
-        
-        if reference is None, it is the diff to last comitted version
-        if reference is not None, the diff between the two commits
+        ''' Get a diff for the same file in an other commmit
+                
+        commitish:  value that refers to a commit
+                    might be a pygit2.Commit, a pygit2.Oid or
+                    a textual representaion of a pygit2.Oid
+                    see utils.ensure_oid()
+        reference:  a commit to diff to
+                    if reference is None, use previous to last commit
         '''
         pg2_diff_blob = self._get_object_from_commit(commitish)
         if reference is None:
@@ -97,7 +106,7 @@ class File(NodeMixin):
             raise GitDictError(msg % (pg2_diff_blob, pg2_ref_blob))
     
     def __iter__(self):
-        ''' iterating over lines in a text file 
+        ''' Iterating over lines in a text file 
         
         just like with the standard file object. 
         uses the encoding set in self.encoding 
